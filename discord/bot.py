@@ -37,4 +37,4 @@ if __name__ == '__main__':
     with open(os.path.join(ABS_PATH, 'config.yaml')) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
     client.run(config['bot']['token'])
-"febfuibewuifbryuierbfueibfyrueibfeyruifbryeuifbryeifbreuibfyruei"
+"reuwirtyweuirteywuirtewyquiretwqyurietwqryuiewqt"
