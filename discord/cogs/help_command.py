@@ -9,7 +9,7 @@ class Help(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @commands.command(brief="Lists commands and gives info.", usage="help *command", hidden=True)
+    @commands.command(brief="Lists commands and gives info.", usage="help *command")
     async def help(self, ctx, request=None):
         if not request:
             embed = helpers.make_embed(title="Commands")
@@ -18,7 +18,7 @@ class Help(commands.Cog):
                 if len(cog_commands) != 0:
                     embed.add_field(
                         name=name,
-                        value='\n'.join([f'{self.client.command_prefix}{command}' for command in cog_commands]),
+                        value='\n'.join([f'`{self.client.command_prefix}`{command}' for command in cog_commands]),
                         inline=True
                         )
         else:
