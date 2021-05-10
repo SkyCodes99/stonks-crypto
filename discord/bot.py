@@ -25,13 +25,6 @@ def command_prefix(client: commands.Bot, message: discord.Message):
     return base
 
 
-    if msg.guild is None:
-        base.append('?')
-    else:
-        base.extend(bot.prefixes.get(msg.guild.id, ['?']))
-    return base
-
-
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix=command_prefix, owner_ids=[640393413425889314, 516206994718326795], intents=intents)
 
