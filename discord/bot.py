@@ -2,7 +2,7 @@ import json
 import os
 
 import yaml
-from helpers import ABS_PATH, COG_FOLDER
+from helpers import ABS_PATH, COG_FOLDER  # type: ignore (pylance)
 import discord
 from discord.ext import commands
 
@@ -19,9 +19,9 @@ def command_prefix(client: commands.Bot, message: discord.Message):
             base.insert(0, prefix)
             return base
         with open(os.path.join(ABS_PATH, 'prefixes.json'), 'w', encoding='utf-8') as f:
-            prefixes[str(message.guild.id)] = '$'
+            prefixes[str(message.guild.id)] = DEFAULT_PREFIX
             json.dump(prefixes, f)
-    base.insert(0, '$')
+    base.insert(0, DEFAULT_PREFIX)
     return base
 
 
@@ -33,7 +33,6 @@ client.remove_command('help')
 for filename in os.listdir(COG_FOLDER):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
-
 
 if __name__ == '__main__':
     with open(os.path.join(ABS_PATH, 'config.yaml')) as f:
