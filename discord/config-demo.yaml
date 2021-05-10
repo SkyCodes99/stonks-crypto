@@ -1,0 +1,3 @@
+# rename this to config.yaml and paste your bot token where it says TOKEN
+bot:
+  token: TOKEN
