@@ -40,20 +40,25 @@ class Help(commands.Cog):
         self.client.remove_cog('handlers')
         await self.client.logout()
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.has_permissions(administrator=True)
-    async def prefix(self, ctx: commands.Context, prefix: str):
+    async def prefix(self, ctx: commands.Context, prefix: str=None):
         with open(os.path.join(helpers.ABS_PATH, 'prefixes.json'), 'r', encoding='utf-8') as f:
             prefixes = json.load(f)
-        prefixes[str(ctx.guild.id)] = prefix
-        with open(os.path.join(helpers.ABS_PATH, 'prefixes.json'), 'w', encoding='utf-8') as f:
-            json.dump(prefixes, f)
+        if prefix:
+            prefixes[str(ctx.guild.id)] = prefix
+            with open(os.path.join(helpers.ABS_PATH, 'prefixes.json'), 'w', encoding='utf-8') as f:
+                json.dump(prefixes, f)
+        else:
+            await self.help(ctx)
 
     @prefix.error
     async def prefix_error(self, ctx: commands.Context, error: discord.DiscordException):
         if isinstance(error, MissingPermissions):
             if not ctx.guild:
                 await ctx.send('Cannot use this command in DM.')
+        else:
+            raise error
 
 
 def setup(client):
