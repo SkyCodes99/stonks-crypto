@@ -25,11 +25,22 @@ def make_embed(title=None, description=None, color=None, author=None,
     else: embed.set_footer(text=datetime.now().strftime("%m/%d/%Y %H:%M:%S"))
     return embed
 
+def round_to_hundredth(num: float) -> float:
+    return int(num*100) / 100
 
 class Ticker(yf.Ticker):
-    def __init__(self, ticker, session):
-        super().__init__(ticker, session=session, debug=False)
+    def __init__(self, ticker, session=None):
+        super().__init__(ticker, session=session)
+        self.data = self.info
 
     @property
     def price(self):
-        return int(self.history().tail(1)['Close'].iloc[0]*100) / 100
+        return self.history(debug=False, rounding=True).tail(1)['Close'].iloc[0]
+
+    def change(self):
+        old = self.info['previousClose']
+        current = self.price
+        return (
+            round_to_hundredth(current-old),
+            round_to_hundredth(((current-old)/old)*100)
+        )

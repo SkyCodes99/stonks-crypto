@@ -8,7 +8,10 @@ class Stocks(commands.Cog):
     def __init__(self, client: commands.Bot) -> None:
         self.client = client
 
-    @commands.command()
+    @commands.command(
+        brief="Check the price of any stock",
+        usage="price <symbol>"
+    )
     async def price(self, ctx: commands.Context, *, ticker: str):
         ticker = helpers.Ticker(ticker)
         info = ticker.info
