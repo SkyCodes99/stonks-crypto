@@ -1,6 +1,5 @@
 import json
 import os
-import pathlib
 
 import discord
 import helpers
@@ -9,15 +8,13 @@ from discord.ext.commands.core import command
 from discord.ext.commands.errors import *
 
 
-ABS_PATH = pathlib.Path(__file__).parent.parent.absolute()
-
 class Help(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
     @commands.command(brief="Lists commands and gives info.", usage="help *command")
     async def help(self, ctx, request=None):
-        prefix = self.client.command_prefix(self.client, ctx.message)
+        prefix = self.client.command_prefix(self.client, ctx.message)[0]
         if not request:
             embed = helpers.make_embed(title="Commands")
             commands_list = [(name, [command for command in cog.get_commands() if not command.hidden]) for name, cog in self.client.cogs.items()]
@@ -46,11 +43,17 @@ class Help(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def prefix(self, ctx: commands.Context, prefix: str):
-        with open(os.path.join(ABS_PATH, 'prefixes.json'), 'r', encoding='utf-8') as f:
+        with open(os.path.join(helpers.ABS_PATH, 'prefixes.json'), 'r', encoding='utf-8') as f:
             prefixes = json.load(f)
         prefixes[str(ctx.guild.id)] = prefix
-        with open(os.path.join(ABS_PATH, 'prefixes.json'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(helpers.ABS_PATH, 'prefixes.json'), 'w', encoding='utf-8') as f:
             json.dump(prefixes, f)
+
+    @prefix.error
+    async def prefix_error(self, ctx: commands.Context, error: discord.DiscordException):
+        if isinstance(error, MissingPermissions):
+            if not ctx.guild:
+                await ctx.send('Cannot use this command in DM.')
 
 
 def setup(client):

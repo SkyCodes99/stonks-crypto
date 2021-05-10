@@ -2,7 +2,12 @@ import random
 from datetime import datetime
 
 import discord
+import pathlib
+import os
 
+
+ABS_PATH = pathlib.Path(__file__).parent.absolute()
+COG_FOLDER = os.path.join(ABS_PATH, 'cogs')
 
 def make_embed(title=None, description=None, color=None, author=None,
                image=None, link=None, footer=None) -> discord.Embed:
