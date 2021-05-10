@@ -34,7 +34,6 @@ for filename in os.listdir(COG_FOLDER):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
 
-
 if __name__ == '__main__':
     with open(os.path.join(ABS_PATH, 'config.yaml')) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
