@@ -2,6 +2,7 @@ from datetime import datetime
 
 import discord
 import pathlib
+import yfinance as yf
 import os
 
 
@@ -23,3 +24,12 @@ def make_embed(title=None, description=None, color=None, author=None,
     if footer: embed.set_footer(text=footer)
     else: embed.set_footer(text=datetime.now().strftime("%m/%d/%Y %H:%M:%S"))
     return embed
+
+
+class Ticker(yf.Ticker):
+    def __init__(self, ticker, session):
+        super().__init__(ticker, session=session, debug=False)
+
+    @property
+    def price(self):
+        return int(self.history().tail(1)['Close'].iloc[0]*100) / 100
