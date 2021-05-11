@@ -17,8 +17,7 @@ class Stocks(commands.Cog):
         info = ticker.info
         change = ticker.change()
 
-        if change['percent'] < 0:
-            change['percent'] *= -1
+        if change['amount'] < 0:
             change['amount'] *= -1
             positive = False
         else:
@@ -27,8 +26,8 @@ class Stocks(commands.Cog):
         embed: discord.Embed = make_embed(  # type: ignore (pylance)
             title=info.get('shortName'),
             description=(f"${ticker.price}\n{BULLISH if positive else BEARISH} " +  # type: ignore (pylance)
-                        f"{'-' if not positive else ''}${change['amount']} " +
-                        f"{'-' if not positive else ''}%{change['percent']}"),
+                        f"{'-' if not positive else ''}${change['amount']}, " +
+                        f"{change['percent']}%"),
             color=discord.Color.green() if positive else discord.Color.red()
         )
         embed.set_thumbnail(url=info["logo_url"])
