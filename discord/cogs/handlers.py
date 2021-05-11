@@ -11,10 +11,6 @@ class Handlers(commands.Cog, name='handlers'):
     @commands.Cog.listener()
     async def on_ready(self):
         print(self.client.user.name + " is ready")
-        # try:
-        #     await self.client.change_presence(activity=discord.Game("$help"))
-        # except:
-        #     pass
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
@@ -29,13 +25,7 @@ class Handlers(commands.Cog, name='handlers'):
 
         elif isinstance(error, (UserNotFound, MemberNotFound)):
             await ctx.send(f"Member, `{error.argument}`, was not found.")
-
-        # elif isinstance(error, MissingPermissions):
-        #     await ctx.send("Must have following permission(s): " + ", ".join([f'`{perm}`' for perm in error.missing_perms]))
-
-        # elif isinstance(error, BotMissingPermissions):
-        #     await ctx.send("I must have following permission(s): " + ", ".join([f'`{perm}`' for perm in error.missing_perms]))
-
+            
         else:
             raise error
 

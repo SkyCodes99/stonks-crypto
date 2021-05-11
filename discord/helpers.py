@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict
 
 import discord
 import pathlib
@@ -8,6 +9,8 @@ import os
 
 ABS_PATH = pathlib.Path(__file__).parent.absolute()
 COG_FOLDER = os.path.join(ABS_PATH, 'cogs')
+BULLISH = '<:bullish:841477499857797130>'
+BEARISH = '<:bearish:841477754658095124>'
 
 def make_embed(title=None, description=None, color=None, author=None,
                image=None, link=None, footer=None) -> discord.Embed:
@@ -34,13 +37,13 @@ class Ticker(yf.Ticker):
         self.data = self.info
 
     @property
-    def price(self):
+    def price(self) -> float:
         return self.history(debug=False, rounding=True).tail(1)['Close'].iloc[0]
 
-    def change(self):
+    def change(self) -> Dict[str, float]:
         old = self.info['previousClose']
         current = self.price
-        return (
-            round_to_hundredth(current-old),
-            round_to_hundredth(((current-old)/old)*100)
-        )
+        return {
+            'amount': round_to_hundredth(current-old),
+            'percent': round_to_hundredth(((current-old)/old)*100)
+        }

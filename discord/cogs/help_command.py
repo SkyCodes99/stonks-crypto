@@ -2,7 +2,7 @@ import json
 import os
 
 import discord
-import helpers
+import helpers  # type: ignore (pylance)
 from discord.ext import commands
 from discord.ext.commands.core import command
 from discord.ext.commands.errors import *
@@ -17,7 +17,8 @@ class Help(commands.Cog):
         prefix = self.client.command_prefix(self.client, ctx.message)[0]
         if not request:
             embed = helpers.make_embed(title="Commands")
-            commands_list = [(name, [command for command in cog.get_commands() if not command.hidden]) for name, cog in self.client.cogs.items()]
+            commands_list = [(name, [command for command in cog.get_commands()\
+                if not command.hidden]) for name, cog in self.client.cogs.items()]
             for name, cog_commands in commands_list:
                 if len(cog_commands) != 0:
                     embed.add_field(
