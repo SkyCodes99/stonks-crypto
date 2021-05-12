@@ -7,7 +7,13 @@ import discord
 from discord.ext import commands
 
 
-DEFAULT_PREFIX='$'
+with open(os.path.join(ABS_PATH, 'config.yaml')) as f:  # type: ignore (pylance)
+        config = yaml.load(f, Loader=yaml.FullLoader)
+        print(config)
+    
+DEFAULT_PREFIX = config['bot']['prefix']
+TOKEN = config['bot']['token']
+OWNER_IDS = config['bot']['owner_ids']
 
 def command_prefix(client: commands.Bot, message: discord.Message):
     user_id = client.user.id
@@ -15,18 +21,25 @@ def command_prefix(client: commands.Bot, message: discord.Message):
     if message.guild:
         with open(os.path.join(ABS_PATH, 'prefixes.json'), 'r', encoding='utf-8') as f:  # type: ignore (pylance)
             prefixes = json.load(f)
+
         if (prefix:=prefixes.get(str(message.guild.id))):
             base.insert(0, prefix)
             return base
+
         with open(os.path.join(ABS_PATH, 'prefixes.json'), 'w', encoding='utf-8') as f:  # type: ignore (pylance)
             prefixes[str(message.guild.id)] = DEFAULT_PREFIX
             json.dump(prefixes, f)
+            
     base.insert(0, DEFAULT_PREFIX)
     return base
 
 
 intents = discord.Intents.all()
-client = commands.Bot(command_prefix=command_prefix, owner_ids=[640393413425889314, 516206994718326795], intents=intents)
+client = commands.Bot(
+    command_prefix=command_prefix,
+    owner_ids=OWNER_IDS,
+    intents=intents
+)
 
 client.remove_command('help')
 
@@ -35,6 +48,4 @@ for filename in os.listdir(COG_FOLDER):  # type: ignore (pylance)
         client.load_extension(f'cogs.{filename[:-3]}')
 
 if __name__ == '__main__':
-    with open(os.path.join(ABS_PATH, 'config.yaml')) as f:  # type: ignore (pylance)
-        config = yaml.load(f, Loader=yaml.FullLoader)
-    client.run(config['bot']['token'])
+    client.run(TOKEN)
