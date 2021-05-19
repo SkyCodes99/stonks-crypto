@@ -41,7 +41,7 @@ class Ticker(yf.Ticker):
         return self.history(debug=False, rounding=True).tail(1)['Close'].iloc[0]
 
     def change(self) -> Dict[str, float]:
-        old = self.info['previousClose']
+        old = self.data['previousClose']
         current = self.price
         return {
             'amount': round_to_hundredth(current-old),

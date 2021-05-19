@@ -9,6 +9,7 @@ class Stocks(commands.Cog):
         self.client = client
 
     @commands.command(
+        aliases=['stock'],
         brief="Check the price of any stock",
         usage="price <symbol>"
     )
