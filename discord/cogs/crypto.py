@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from typing import List
 from pycoingecko import CoinGeckoAPI
+# from helpers import *  # type: ignore (pylance)
 
 
 class Crypto(commands.Cog):
@@ -12,14 +13,29 @@ class Crypto(commands.Cog):
 def setup(client: commands.Bot):
     client.add_cog(Crypto)
 
-cg = CoinGeckoAPI()
-def get_price(ids: List[str], **kwargs):
-    return cg.get_price(ids=ids, vs_currencies='usd', **kwargs)
 
-# print(cg.get_coin_by_id('bitcoin', localization=False))
 import json
+import importlib.util
 
-coins_dict = {coin['symbol']: coin['id'] for coin in cg.get_coins_list()}
+spec = importlib.util.spec_from_file_location('helpers', './discord/helpers.py')
+helpers = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(helpers)
 
-with open('symbols.json', 'w', encoding='utf-8') as f:
-    json.dump(coins_dict, f)
+class Currency():
+    cg = CoinGeckoAPI()
+
+    def __init__(self, ticker_or_name: str) -> None:
+        self.name = n if (n:=self.symbol_to_id(ticker_or_name)) else ticker_or_name
+
+    @staticmethod
+    def symbol_to_id(symbol: str):
+        with open(helpers.COG_FOLDER+'/symbols.json', 'r', encoding='utf-8') as f:  # type: ignore (pylance)
+            return json.load(f).get(symbol)
+
+    @property
+    def price(self) -> int:
+        return self.cg.get_price(ids=self.name, vs_currencies='usd')[self.name]['usd']
+
+btc = Currency('btc')
+print(btc.name)
+print(btc.price)
